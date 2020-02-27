@@ -58,22 +58,20 @@ def L_model_backward(AL, Y, caches, activations, loss):
     m = AL.shape[1]
     Y = Y.reshape(AL.shape) # after this line, Y is the same shape as AL
 
-    if loss = 'binary_crossentropy'
+    if loss == 'binary_crossentropy':
         dAL = binary_crossentropy_derivative(Y, AL)
-    elif loss = 'mean_squared_error'
+    elif loss == 'mean_squared_error':
         dAL = binary_crossentropy_derivative(Y, AL)
 
 
     #ovo mora odvojeno od for petlje zbog prvog prosledjivanja dA (dAL)
     current_cache = caches[L-1]
-    
     grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_activation_backward(dAL, current_cache, activation = activations[L-1])
 
     # Loop from l=L-2 to l=0
     for l in reversed(range(L-1)):
 
         current_cache = caches[l]
-
         dA_prev_temp, dW_temp, db_temp = linear_activation_backward(grads["dA" + str(l + 1)], current_cache, activation = activations[l])
 
         grads["dA" + str(l)] = dA_prev_temp
