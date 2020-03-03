@@ -1,9 +1,10 @@
 import numpy as np
 from initializers import initialize
-from forwards import L_model_forward
-from backwards import L_model_backward
-from losess import compute_loss
+from forwards import model_forward
+from backwards import model_backward
+from losses import model_loss
 from optimizers import Optimizer
+from checking import gradient_check
 
 class Acinn:
 
@@ -36,19 +37,22 @@ class Acinn:
 
 
     def fit(self, X, Y, epochs = 1, info=True):
-        if X.shape[0] is self.layer_dims[0]:                                    #provera da li je X istog shapea kao i input
+        if X.shape[0] == self.layer_dims[0]:                                    #provera da li je X istog shapea kao i input
 
             costs = []
 
             for i in range(0, epochs):
 
-                AL, cashe = L_model_forward(X, self.parameters, self.activations)
+                AL, cashe = model_forward(X, self.parameters, self.activations)
 
-                cost = compute_loss(AL, Y, self.loss)
+                cost = model_loss(AL, Y, self.loss)
 
-                grads = L_model_backward(AL, Y, cashe, self.activations, self.loss)
+                gradients = model_backward(AL, Y, cashe, self.activations, self.loss)
 
-                self.parameters = self.optimizer.optimize(self.parameters, grads)
+                if i == 0 or i == 10 or i == 100 or i == 1000:
+                    gradient_check(self.parameters, gradients, self.activations, X, Y, self.loss)
+
+                self.parameters = self.optimizer.optimize(self.parameters, gradients)
 
 
 
@@ -61,3 +65,11 @@ class Acinn:
 
         else:
             print('Shape of X is not shape of input')
+
+
+    def predict(self, x):
+
+        AL, cache = model_forward(x, self.parameters, self.activations)
+        predictions = AL > 0.5
+
+        return predictions

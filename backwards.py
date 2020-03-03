@@ -1,6 +1,6 @@
 import numpy as np
 from activations import sigmoid_derivative, relu_derivative
-from losess import binary_crossentropy_derivative
+from losses import binary_crossentropy_derivative
 
 def relu_backward(dA, activation_cache):
 
@@ -21,8 +21,8 @@ def linear_backward(dZ, cache):
     m = A_prev.shape[1]
 
 
-    dW = 1 / m * np.dot(dZ, A_prev.T)
-    db = 1 / m * np.sum(dZ, axis = 1, keepdims=True)
+    dW = 1. / m * np.dot(dZ, A_prev.T)
+    db = 1. / m * np.sum(dZ, axis = 1, keepdims=True)
     dA_prev = np.dot(W.T, dZ)
 
 
@@ -51,7 +51,7 @@ def linear_activation_backward(dA, cache, activation):
 
 
 
-def L_model_backward(AL, Y, caches, activations, loss):
+def model_backward(AL, Y, caches, activations, loss):
 
     grads = {}
     L = len(caches) # the number of layers
@@ -77,6 +77,5 @@ def L_model_backward(AL, Y, caches, activations, loss):
         grads["dA" + str(l)] = dA_prev_temp
         grads["dW" + str(l + 1)] = dW_temp
         grads["db" + str(l + 1)] = db_temp
-
 
     return grads

@@ -32,7 +32,7 @@ def linear_activation_forward(A_prev, W, b, activation):
     return A, cache
 
 
-def L_model_forward(X, parameters, activations):
+def model_forward(X, parameters, activations):
     # function calculate AL (last A in network)
 
     caches = []
