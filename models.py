@@ -8,36 +8,30 @@ from checking import gradient_check
 
 class Acinn:
 
-    layer_dims = [0]                # dimension of NN
+    layers = []                     # dimension of NN
     activations = []                # array of activations for layers
     parameters = {}                 # parameters (W,b) of layers
     loss = ()                       # loss that we use
     optimizer = None
 
 
-    def add(self, num_units = 0, activation = 'relu', input_shape = 0):
-        if self.layer_dims[0] is not 0 or input_shape is not 0:                 #provera da li je input shape definisan
+    def add(self, layer):
 
-            self.layer_dims.append(num_units)
-            self.activations.append(activation)
+        self.layers.append(layer)
 
-            if input_shape is not 0:
-                self.layer_dims[0] = input_shape
-
-        else:
-            print('Input shape is not defined')
+        assert(self.layers[0].input_shape != None), 'Input shape is not defined'
 
 
 
     def compile(self, initializer = 'random', loss = 'mean_squared_error', optimizer = Optimizer() ):
 
-        self.parameters = initialize(self.layer_dims, initializer)
+        self.parameters = initialize(self.layers, initializer)
         self.loss = loss
         self.optimizer = optimizer
 
 
     def fit(self, X, Y, epochs = 1, info=True):
-        if X.shape[0] == self.layer_dims[0]:                                    #provera da li je X istog shapea kao i input
+        if X.shape[0] == self.layers[0].input_shape:                                    #provera da li je X istog shapea kao i input
 
             costs = []
 
