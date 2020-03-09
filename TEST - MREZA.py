@@ -22,7 +22,7 @@ model.add(2)
 model.add(2)
 model.add(1, activation = 'sigmoid')
 
-model.compile(initializer = 'random', loss = 'binary_crossentropy', optimizer = Optimizer(learning_rate=0.01) )
+model.compile(initializer = 'xavier', loss = 'binary_crossentropy', optimizer = Optimizer(learning_rate=0.01) )
 
 model.fit(X, Y, 10000)
 
