@@ -24,7 +24,7 @@ class Acinn:
         assert(self.layers[0].input_shape != None), 'Input shape is not defined'
 
 
-    def compile(self, initializer = 'random', loss = 'mean_squared_error', optimizer = Optimizer() ):
+    def compile(self, initializer = 'random', loss = 'mean_squared_error', optimizer = Optimizer()):
 
         self.parameters = initialize(self.layers, initializer)
         self.loss = loss
