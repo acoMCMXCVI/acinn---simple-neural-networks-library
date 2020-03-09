@@ -6,6 +6,6 @@ class Dense():
 
     def __init__(self, units, activation = 'relu', input_shape = None):
 
-        self.units = 0
+        self.units = units
         self.activation = activation
         self.input_shape = input_shape

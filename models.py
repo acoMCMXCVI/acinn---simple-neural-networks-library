@@ -16,11 +16,12 @@ class Acinn:
 
 
     def add(self, layer):
+        if self.layers:
+            layer.input_shape = self.layers[-1].units
 
         self.layers.append(layer)
 
         assert(self.layers[0].input_shape != None), 'Input shape is not defined'
-
 
 
     def compile(self, initializer = 'random', loss = 'mean_squared_error', optimizer = Optimizer() ):
@@ -31,34 +32,33 @@ class Acinn:
 
 
     def fit(self, X, Y, epochs = 1, info=True):
-        if X.shape[0] == self.layers[0].input_shape:                                    #provera da li je X istog shapea kao i input
+        assert(X.shape[0] == self.layers[0].input_shape), 'Input shape of X is not equale to input shape of model'  #provera da li je X istog shapea kao i input
 
-            costs = []
+        costs = []
 
-            for i in range(0, epochs):
+        for i in range(0, epochs):
 
-                AL, cashe = model_forward(X, self.parameters, self.activations)
+            AL, cashe = model_forward(X, self.parameters, self.layers)
 
-                cost = model_loss(AL, Y, self.loss)
+            cost = model_loss(AL, Y, self.loss)
 
-                gradients = model_backward(AL, Y, cashe, self.activations, self.loss)
+            gradients = model_backward(AL, Y, cashe, self.layers, self.loss)
 
-                if i == 0 or i == 10 or i == 100 or i == 1000:
-                    gradient_check(self.parameters, gradients, self.activations, X, Y, self.loss)
+            if i == 0 or i == 10 or i == 100 or i == 1000:
+                gradient_check(self.parameters, gradients, self.layers, X, Y, self.loss)
 
-                self.parameters = self.optimizer.optimize(self.parameters, gradients)
-
-
-
-                if info and i % 1000 == 0:
-                    print ("Cost after iteration %i: %f" %(i, cost))
-
-                if i % 100 == 0:
-                    costs.append(cost)
+            self.parameters = self.optimizer.optimize(self.parameters, gradients)
 
 
-        else:
-            print('Shape of X is not shape of input')
+
+            if info and i % 1000 == 0:
+                print ("Cost after iteration %i: %f" %(i, cost))
+
+            if i % 100 == 0:
+                costs.append(cost)
+
+        return costs
+
 
 
     def predict(self, x):
@@ -67,3 +67,12 @@ class Acinn:
         predictions = AL > 0.5
 
         return predictions
+
+
+
+    def lay(self):
+        L = len(self.layers)
+
+        for l in range(0,L):
+            print(self.layers[l].input_shape)
+            print(self.layers[l].units)

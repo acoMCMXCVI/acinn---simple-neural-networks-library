@@ -3,7 +3,7 @@ from forwards import model_forward
 from backwards import model_backward
 from losses import model_loss
 
-def gradient_check(parameters, gradients, activations, X, Y, loss, epsilon = 1e-7):
+def gradient_check(parameters, gradients, layers, X, Y, loss, epsilon = 1e-7):
 
     # Set-up variables
     parameters_values, parameters_shapes = dictionary_to_vector(parameters)
@@ -24,14 +24,14 @@ def gradient_check(parameters, gradients, activations, X, Y, loss, epsilon = 1e-
 
         thetaplus = np.copy(parameters_values)                                      # Step 1
         thetaplus[i] = thetaplus[i] + epsilon                                # Step 2
-        AL, _ = model_forward(X, vector_to_dictionary(thetaplus, parameters_shapes), activations)
+        AL, _ = model_forward(X, vector_to_dictionary(thetaplus, parameters_shapes), layers)
         J_plus[i][0] = model_loss(AL, Y, loss)
 
 
         # Compute J_minus[i]. Inputs: "parameters_values, epsilon". Output = "J_minus[i]".
         thetaminus = np.copy(parameters_values)                                     # Step 1
         thetaminus[i] = thetaminus[i] - epsilon
-        AL, _ = model_forward(X, vector_to_dictionary(thetaminus, parameters_shapes), activations)  # Step 2
+        AL, _ = model_forward(X, vector_to_dictionary(thetaminus, parameters_shapes), layers)  # Step 2
         J_minus[i][0] = model_loss(AL, Y, loss)
 
         # Compute gradapprox[i]

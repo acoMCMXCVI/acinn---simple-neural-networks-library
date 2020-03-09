@@ -32,7 +32,7 @@ def linear_activation_forward(A_prev, W, b, activation):
     return A, cache
 
 
-def model_forward(X, parameters, activations):
+def model_forward(X, parameters, layers):
     # function calculate AL (last A in network)
 
     caches = []
@@ -42,11 +42,12 @@ def model_forward(X, parameters, activations):
 
     for l in range(1, L+1):
         A_prev = A
-        A, cache = linear_activation_forward(A_prev, parameters['W' + str(l)], parameters['b' + str(l)], activation = activations[l-1])
+        A, cache = linear_activation_forward(A_prev, parameters['W' + str(l)], parameters['b' + str(l)], activation = layers[l-1].activation)
         caches.append(cache)
+        
 
     AL = A
 
-    assert(AL.shape == (1,X.shape[1]))
+    assert(AL.shape == (1, X.shape[1]))
 
     return AL, caches

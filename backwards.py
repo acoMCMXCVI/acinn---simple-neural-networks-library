@@ -51,7 +51,7 @@ def linear_activation_backward(dA, cache, activation):
 
 
 
-def model_backward(AL, Y, caches, activations, loss):
+def model_backward(AL, Y, caches, layers, loss):
 
     grads = {}
     L = len(caches) # the number of layers
@@ -66,13 +66,13 @@ def model_backward(AL, Y, caches, activations, loss):
 
     #ovo mora odvojeno od for petlje zbog prvog prosledjivanja dA (dAL)
     current_cache = caches[L-1]
-    grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_activation_backward(dAL, current_cache, activation = activations[L-1])
+    grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_activation_backward(dAL, current_cache, activation = layers[L-1].activation)
 
     # Loop from l=L-2 to l=0
     for l in reversed(range(L-1)):
 
         current_cache = caches[l]
-        dA_prev_temp, dW_temp, db_temp = linear_activation_backward(grads["dA" + str(l + 1)], current_cache, activation = activations[l])
+        dA_prev_temp, dW_temp, db_temp = linear_activation_backward(grads["dA" + str(l + 1)], current_cache, activation = layers[l].activation)
 
         grads["dA" + str(l)] = dA_prev_temp
         grads["dW" + str(l + 1)] = dW_temp
