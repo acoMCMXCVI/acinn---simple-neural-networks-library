@@ -56,7 +56,6 @@ def make_dev_minibatch_sets(X, Y, mini_batch_size, validation_split):
     # Create dev set
     shuffled_dev_X = X[:, dev_permutation]
     shuffled_dev_Y = Y[:, dev_permutation].reshape((1,-1))
-    print(str(shuffled_dev_Y) + "Dev")
 
     dev_set = (shuffled_dev_X, shuffled_dev_Y)
 
@@ -64,7 +63,6 @@ def make_dev_minibatch_sets(X, Y, mini_batch_size, validation_split):
     # Create train set
     shuffled_train_X = X[:, train_permutation]
     shuffled_train_Y = Y[:, train_permutation].reshape((1,-1))
-    print(str(shuffled_train_Y) + "Train")
 
     m_t = shuffled_train_X.shape[-1]
 

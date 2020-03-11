@@ -58,19 +58,19 @@ class Acinn:
 
                 self.parameters = self.optimizer.optimize(self.parameters, gradients)
 
-            epoch_cost_avg = epoch_cost_total / X.shape[-1]
+            epoch_cost_avg = epoch_cost_total / int(X.shape[-1] * (1 - validation_set)) # Ovde ukupan train loss delimo sa brojem examplova u train setu
 
-
+            # calculating the loss of dev set
             AL_dev, _ = model_forward(dev_X, self.parameters, self.layers)
-            dev_cost = model_loss(AL_dev, dev_Y, self.loss)
+            dev_cost = model_loss(AL_dev, dev_Y, self.loss) / dev_X.shape[-1]   # ovde dev loss delimo sa brojem examplova u dev setu
 
 
             if info and i % 100 == 0:
                 print ("Train cost after iteration %i: %f" %(i, epoch_cost_avg))
-                print ("Dev cost after iteration %i: %f" %(i, epoch_cost_avg))
+                print ("Dev cost after iteration %i: %f" %(i, dev_cost))
 
-            if i % 100 == 0:
-                costs.append(epoch_cost_avg, dev_cost)
+            if i % 10 == 0:
+                costs.append((epoch_cost_avg, dev_cost))
 
         return costs
 
