@@ -77,5 +77,6 @@ def model_backward(AL, Y, caches, layers, loss):
         grads["dA" + str(l)] = dA_prev_temp
         grads["dW" + str(l + 1)] = dW_temp
         grads["db" + str(l + 1)] = db_temp
+        
 
     return grads

@@ -19,7 +19,7 @@ def relu_initialize(layers):             #relu initialization
     L = len(layers)
 
     for l in range(1, L+1):
-        parameters['W' + str(l)] = np.random.randn(layers[l-1].units, layers[l-1].input_shape) * np.sqrt(2. / layers[l-1].units)
+        parameters['W' + str(l)] = np.random.randn(layers[l-1].units, layers[l-1].input_shape) * np.sqrt(2. / layers[l-1].input_shape)
         parameters['b' + str(l)] = np.random.randn(layers[l-1].units, 1) * np.sqrt(2. / layers[l-1].units)    #np.zeros((layers[l].units, 1))
 
         assert(parameters['W' + str(l)].shape == (layers[l-1].units, layers[l-1].input_shape))
@@ -47,7 +47,7 @@ def xavier_initialize(layers):             #xavier initialization
 def initialize(layers, initializer):
     parameters = {}
 
-    if initializer == 'random' or initializer == 'relu':
+    if initializer == 'random' or initializer == 'relu' or initializer == 'he':
         parameters = relu_initialize(layers)
     elif initializer == 'zeros':
         parameters = zero_initialize(layers)
@@ -55,5 +55,6 @@ def initialize(layers, initializer):
         parameters = xavier_initialize(layers)
     else:
         print('Initializer is not found')
+    print(parameters)
 
     return parameters

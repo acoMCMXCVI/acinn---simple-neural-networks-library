@@ -44,8 +44,8 @@ class Acinn:
 
             gradients = model_backward(AL, Y, cashe, self.layers, self.loss)
 
-            if i == 0 or i == 10 or i == 100 or i == 1000:
-                gradient_check(self.parameters, gradients, self.layers, X, Y, self.loss)
+            #if i == 0 or i == 10 or i == 100 or i == 1000:
+                #gradient_check(self.parameters, gradients, self.layers, X, Y, self.loss)
 
             self.parameters = self.optimizer.optimize(self.parameters, gradients)
 

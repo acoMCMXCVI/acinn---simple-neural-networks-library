@@ -11,7 +11,7 @@ train_x_orig, train_y, test_x_orig, test_y, classes = load_data()
 print(train_x_orig.shape)
 print(train_y.shape)
 
-plt.imshow(train_x_orig[50])    # ne znam zasto ne radi
+plt.imshow(train_x_orig[50])
 #plt.show()
 print(train_x_orig[50])
 
@@ -21,17 +21,17 @@ test_x_flatten = test_x_orig.reshape(test_x_orig.shape[0], -1).T
 train_x = train_x_flatten/255.
 test_x = test_x_flatten/255.
 
-print(train_x.shape)
+print(train_x[0])
+print(train_y.shape)
 
 model = Acinn()
 
-model.add(Dense(20, 'relu', train_x.shape[0]))
-model.add(Dense(40, 'relu'))
+model.add(Dense(7, 'relu', train_x.shape[0]))
 model.add(Dense(1, 'sigmoid'))
 
 #model.lay()
 
-model.compile(initializer = 'relu', loss = 'binary_crossentropy', optimizer = Optimizer(learning_rate=0.01) )
+model.compile(initializer = 'he', loss = 'binary_crossentropy', optimizer = Optimizer(learning_rate=0.01) )
 
 history = model.fit(train_x, train_y, 10000)
 
