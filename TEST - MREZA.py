@@ -13,16 +13,12 @@ print(train_y.shape)
 
 #plt.imshow(train_x_orig[50])
 #plt.show()
-print(train_x_orig[50])
 
 train_x_flatten = train_x_orig.reshape(train_x_orig.shape[0], -1).T 
 test_x_flatten = test_x_orig.reshape(test_x_orig.shape[0], -1).T
 
 train_x = train_x_flatten/255.
 test_x = test_x_flatten/255.
-
-print(train_x[0])
-print(train_y.shape)
 
 model = Acinn()
 

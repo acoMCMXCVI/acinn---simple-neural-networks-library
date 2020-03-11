@@ -55,6 +55,5 @@ def initialize(layers, initializer):
         parameters = xavier_initialize(layers)
     else:
         print('Initializer is not found')
-    print(parameters)
 
     return parameters

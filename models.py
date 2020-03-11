@@ -3,7 +3,7 @@ from initializers import initialize
 from forwards import model_forward
 from backwards import model_backward
 from losses import model_loss
-from optimizers import Optimizer, make_m_batches
+from optimizers import Optimizer, make_dev_minibatch_sets
 from checking import gradient_check
 
 class Acinn:
@@ -31,14 +31,16 @@ class Acinn:
         self.optimizer = optimizer
 
 
-    def fit(self, X, Y, batch_size = 32, epochs = 1, info=True):
+    def fit(self, X, Y, batch_size = 32, epochs = 1, validation_set = 0.2, info=True):
         assert(X.shape[0] == self.layers[0].input_shape), 'Input shape of X is not equale to input shape of model'  #provera da li je X istog shapea kao i input
 
         costs = []
 
         for i in range(0, epochs):
 
-            minibatches = make_m_batches(X, Y, batch_size)
+            minibatches, dev_set = make_dev_minibatch_sets(X, Y, batch_size, validation_set)
+            (dev_X, dev_Y) = dev_set
+
             epoch_cost_total = 0
 
             for minibatch in minibatches:
@@ -59,11 +61,16 @@ class Acinn:
             epoch_cost_avg = epoch_cost_total / X.shape[-1]
 
 
+            AL_dev, _ = model_forward(dev_X, self.parameters, self.layers)
+            dev_cost = model_loss(AL_dev, dev_Y, self.loss)
+
+
             if info and i % 100 == 0:
-                print ("Cost after iteration %i: %f" %(i, epoch_cost_avg))
+                print ("Train cost after iteration %i: %f" %(i, epoch_cost_avg))
+                print ("Dev cost after iteration %i: %f" %(i, epoch_cost_avg))
 
             if i % 100 == 0:
-                costs.append(epoch_cost_avg)
+                costs.append(epoch_cost_avg, dev_cost)
 
         return costs
 

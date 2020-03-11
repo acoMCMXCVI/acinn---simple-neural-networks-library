@@ -41,22 +41,39 @@ def stochastic_gradient_descent(parameters, grads, learning_rate):
     return parameters
 
 
-def make_m_batches(X, Y, mini_batch_size = 64):
+def make_dev_minibatch_sets(X, Y, mini_batch_size, validation_split):
 
-    m = X.shape[1]
+    m = X.shape[-1]
     mini_batches = []
 
     # Shuffle (X, Y)
     permutation = list(np.random.permutation(m))
-    shuffled_X = X[:, permutation]
-    shuffled_Y = Y[:, permutation].reshape((1,m))
+
+    # Create list of data indexes for dev and traint sets
+    dev_permutation = permutation[ : int(m * validation_split) ]
+    train_permutation = permutation[ int(m * validation_split) : ]
+
+    # Create dev set
+    shuffled_dev_X = X[:, dev_permutation]
+    shuffled_dev_Y = Y[:, dev_permutation].reshape((1,-1))
+    print(str(shuffled_dev_Y) + "Dev")
+
+    dev_set = (shuffled_dev_X, shuffled_dev_Y)
+
+
+    # Create train set
+    shuffled_train_X = X[:, train_permutation]
+    shuffled_train_Y = Y[:, train_permutation].reshape((1,-1))
+    print(str(shuffled_train_Y) + "Train")
+
+    m_t = shuffled_train_X.shape[-1]
 
     # Partition (shuffled_X, shuffled_Y). Minus the end case.
-    num_complete_minibatches = int(m / mini_batch_size) # math.floor(m / mini)  number of mini batches of size mini_batch_size in your partitionning
+    num_complete_minibatches = int(m_t / mini_batch_size) # math.floor(m / mini)  number of mini batches of size mini_batch_size in your partitionning
     for k in range(0, num_complete_minibatches):
 
-        mini_batch_X = shuffled_X[:, k * mini_batch_size : (k + 1) * mini_batch_size ]
-        mini_batch_Y = shuffled_Y[:, k * mini_batch_size : (k + 1) * mini_batch_size ]
+        mini_batch_X = shuffled_train_X[:, k * mini_batch_size : (k + 1) * mini_batch_size ]
+        mini_batch_Y = shuffled_train_Y[:, k * mini_batch_size : (k + 1) * mini_batch_size ]
 
         mini_batch = (mini_batch_X, mini_batch_Y)
         mini_batches.append(mini_batch)
@@ -64,10 +81,10 @@ def make_m_batches(X, Y, mini_batch_size = 64):
     # Handling the end case (last mini-batch < mini_batch_size) Dodajemo mini batch koji moze da bude i manji od pune vrednosti
     if m % mini_batch_size != 0:
 
-        mini_batch_X = X[:, - ( m - mini_batch_size * int(m/mini_batch_size)) :]
-        mini_batch_Y = Y[:, - ( m - mini_batch_size * int(m/mini_batch_size)) :]
+        mini_batch_X = shuffled_train_X[:, - ( m_t - mini_batch_size * int(m_t/mini_batch_size)) :]
+        mini_batch_Y = shuffled_train_Y[:, - ( m_t - mini_batch_size * int(m_t/mini_batch_size)) :]
 
         mini_batch = (mini_batch_X, mini_batch_Y)
         mini_batches.append(mini_batch)
 
-    return mini_batches
+    return mini_batches, dev_set
