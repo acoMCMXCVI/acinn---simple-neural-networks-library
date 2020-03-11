@@ -27,26 +27,21 @@ model.add(Dense(1, 'sigmoid'))
 
 #model.lay()
 
-model.compile(initializer = 'he', loss = 'binary_crossentropy', optimizer = Optimizer(learning_rate=0.01) )
+model.compile(initializer = 'he', loss = 'binary_crossentropy', optimizer = Optimizer(learning_rate=0.005) )
 
-history = model.fit(train_x, train_y, epochs = 1000)
+history = model.fit(train_x, train_y, epochs = 1000, validation_split = 0.2)
 
 plt.plot(np.squeeze(history))
 plt.ylabel('cost')
 plt.xlabel('iterations (per hundreds)')
-plt.title("Learning rate =" + str(0.01))
+plt.title("Learning rate =" + str(0.005))
+plt.legend(('train', 'dev'))
 plt.show()
 
 
-'''
-
-predictions = model.predict(x)
 
 
+predictions = model.predict(test_x)
 
-print ('Accuracy: %d' % float((np.dot(y,predictions.T) + np.dot(1-y,1-predictions.T))/float(y.size)*100) + '%')
-predictions = model.predict(X)
+print ('Accuracy: %d' % float((np.dot(test_y,predictions.T) + np.dot(1-test_y,1-predictions.T))/float(test_y.size)*100) + '%')
 
-print ('Accuracy: %d' % float((np.dot(Y,predictions.T) + np.dot(1-Y,1-predictions.T))/float(Y.size)*100) + '%')
-
-'''

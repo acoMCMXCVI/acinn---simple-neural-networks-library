@@ -3,7 +3,7 @@ from initializers import initialize
 from forwards import model_forward
 from backwards import model_backward
 from losses import model_loss
-from optimizers import Optimizer, make_dev_minibatch_sets
+from optimizers import Optimizer, make_dev_train_sets, make_m_batches
 from checking import gradient_check
 
 class Acinn:
@@ -31,17 +31,21 @@ class Acinn:
         self.optimizer = optimizer
 
 
-    def fit(self, X, Y, batch_size = 32, epochs = 1, validation_set = 0.2, info=True):
+    def fit(self, X, Y, batch_size = 32, epochs = 1, validation_split = 0., info=True):
         assert(X.shape[0] == self.layers[0].input_shape), 'Input shape of X is not equale to input shape of model'  #provera da li je X istog shapea kao i input
 
         costs = []
 
+        train_set, dev_set = make_dev_train_sets(X, Y, validation_split)
+        (X_train, Y_train) = train_set
+        (X_dev, Y_dev) = dev_set
+
         for i in range(0, epochs):
 
-            minibatches, dev_set = make_dev_minibatch_sets(X, Y, batch_size, validation_set)
-            (dev_X, dev_Y) = dev_set
+            minibatches = make_m_batches(X_train, Y_train, batch_size)
 
             epoch_cost_total = 0
+            dev_cost = 0
 
             for minibatch in minibatches:
 
@@ -58,11 +62,12 @@ class Acinn:
 
                 self.parameters = self.optimizer.optimize(self.parameters, gradients)
 
-            epoch_cost_avg = epoch_cost_total / int(X.shape[-1] * (1 - validation_set)) # Ovde ukupan train loss delimo sa brojem examplova u train setu
+            epoch_cost_avg = epoch_cost_total / X_train.shape[-1]       # Ovde ukupan train loss delimo sa brojem examplova u train setu
 
             # calculating the loss of dev set
-            AL_dev, _ = model_forward(dev_X, self.parameters, self.layers)
-            dev_cost = model_loss(AL_dev, dev_Y, self.loss) / dev_X.shape[-1]   # ovde dev loss delimo sa brojem examplova u dev setu
+            if validation_split != 0.:
+                AL_dev, _ = model_forward(X_dev, self.parameters, self.layers)
+                dev_cost = model_loss(AL_dev, Y_dev, self.loss) / X_dev.shape[-1]   # ovde dev loss delimo sa brojem examplova u dev setu
 
 
             if info and i % 100 == 0:
@@ -78,7 +83,7 @@ class Acinn:
 
     def predict(self, x):
 
-        AL, cache = model_forward(x, self.parameters, self.activations)
+        AL, cache = model_forward(x, self.parameters, self.layers)
         predictions = AL > 0.5
 
         return predictions
