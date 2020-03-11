@@ -3,7 +3,7 @@ from initializers import initialize
 from forwards import model_forward
 from backwards import model_backward
 from losses import model_loss
-from optimizers import Optimizer
+from optimizers import Optimizer, make_m_batches
 from checking import gradient_check
 
 class Acinn:
@@ -31,31 +31,39 @@ class Acinn:
         self.optimizer = optimizer
 
 
-    def fit(self, X, Y, epochs = 1, info=True):
+    def fit(self, X, Y, batch_size = 32, epochs = 1, info=True):
         assert(X.shape[0] == self.layers[0].input_shape), 'Input shape of X is not equale to input shape of model'  #provera da li je X istog shapea kao i input
 
         costs = []
 
         for i in range(0, epochs):
 
-            AL, cashe = model_forward(X, self.parameters, self.layers)
+            minibatches = make_m_batches(X, Y, batch_size)
+            epoch_cost_total = 0
 
-            cost = model_loss(AL, Y, self.loss)
+            for minibatch in minibatches:
 
-            gradients = model_backward(AL, Y, cashe, self.layers, self.loss)
+                (minibatch_X, minibatch_Y) = minibatch
 
-            #if i == 0 or i == 10 or i == 100 or i == 1000:
-                #gradient_check(self.parameters, gradients, self.layers, X, Y, self.loss)
+                AL, cashe = model_forward(minibatch_X, self.parameters, self.layers)
 
-            self.parameters = self.optimizer.optimize(self.parameters, gradients)
+                epoch_cost_total += model_loss(AL, minibatch_Y, self.loss)
+
+                gradients = model_backward(AL, minibatch_Y, cashe, self.layers, self.loss)
+
+                #if i == 0 or i == 10 or i == 100 or i == 1000:
+                    #gradient_check(self.parameters, gradients, self.layers, minibatch_X, minibatch_Y, self.loss)
+
+                self.parameters = self.optimizer.optimize(self.parameters, gradients)
+
+            epoch_cost_avg = epoch_cost_total / X.shape[-1]
 
 
-
-            if info and i % 1000 == 0:
-                print ("Cost after iteration %i: %f" %(i, cost))
+            if info and i % 100 == 0:
+                print ("Cost after iteration %i: %f" %(i, epoch_cost_avg))
 
             if i % 100 == 0:
-                costs.append(cost)
+                costs.append(epoch_cost_avg)
 
         return costs
 

@@ -11,7 +11,7 @@ train_x_orig, train_y, test_x_orig, test_y, classes = load_data()
 print(train_x_orig.shape)
 print(train_y.shape)
 
-plt.imshow(train_x_orig[50])
+#plt.imshow(train_x_orig[50])
 #plt.show()
 print(train_x_orig[50])
 
@@ -33,7 +33,7 @@ model.add(Dense(1, 'sigmoid'))
 
 model.compile(initializer = 'he', loss = 'binary_crossentropy', optimizer = Optimizer(learning_rate=0.01) )
 
-history = model.fit(train_x, train_y, 10000)
+history = model.fit(train_x, train_y, epochs = 1000)
 
 plt.plot(np.squeeze(history))
 plt.ylabel('cost')

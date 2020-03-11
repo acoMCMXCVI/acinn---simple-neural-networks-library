@@ -1,3 +1,4 @@
+import numpy as np
 
 class Optimizer():
 
@@ -40,9 +41,8 @@ def stochastic_gradient_descent(parameters, grads, learning_rate):
     return parameters
 
 
-def make_m_batches(X, Y, mini_batch_size = 64, seed = 0):
+def make_m_batches(X, Y, mini_batch_size = 64):
 
-    np.random.seed(seed)
     m = X.shape[1]
     mini_batches = []
 
@@ -64,8 +64,8 @@ def make_m_batches(X, Y, mini_batch_size = 64, seed = 0):
     # Handling the end case (last mini-batch < mini_batch_size) Dodajemo mini batch koji moze da bude i manji od pune vrednosti
     if m % mini_batch_size != 0:
 
-        mini_batch_X = X[:, - ( m - mini_batch_size * math.floor(m/mini_batch_size)) :]
-        mini_batch_Y = Y[:, - ( m - mini_batch_size * math.floor(m/mini_batch_size)) :]
+        mini_batch_X = X[:, - ( m - mini_batch_size * int(m/mini_batch_size)) :]
+        mini_batch_Y = Y[:, - ( m - mini_batch_size * int(m/mini_batch_size)) :]
 
         mini_batch = (mini_batch_X, mini_batch_Y)
         mini_batches.append(mini_batch)
