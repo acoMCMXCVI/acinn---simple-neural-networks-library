@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from models import Acinn
-from optimizers import Optimizer
+from optimizers import Optimizer, make_dev_train_sets, make_m_batches
 from layers import Dense
 
 
@@ -17,19 +17,23 @@ y = y.reshape(1, len(y))
 
 
 
-model = Acinn()
+X = np.arange(20).reshape(1,-1)
+Y = np.arange(20).reshape(1,-1)
+print(X)
 
-model.add(Dense(2, 'relu', 2))
-model.add(Dense(1, 'sigmoid'))
 
-#model.lay()
 
-model.compile(initializer = 'relu', loss = 'binary_crossentropy', optimizer = Optimizer(learning_rate=0.01) )
 
-history = model.fit(X, Y, 10000)
+train_set, dev_set = make_dev_train_sets(X,Y,0.5)
+(train_X, train_Y) = train_set
+(dev_X, dev_Y) = dev_set
 
-plt.plot(np.squeeze(history))
-plt.ylabel('cost')
-plt.xlabel('iterations (per hundreds)')
-plt.title("Learning rate =" + str(0.01))
-plt.show()
+print(train_X.shape)
+print(dev_X.shape)
+
+print(train_X)
+print(dev_X)
+
+minibatches = make_m_batches(train_X, train_Y, 0)
+print(minibatches)
+

@@ -51,23 +51,27 @@ def make_m_batches(X_train, Y_train, mini_batch_size):
     shuffled_X = X_train[:, permutation]
     shuffled_Y = Y_train[:, permutation].reshape((1,m))
 
-    # Partition (shuffled_X, shuffled_Y). Minus the end case.
-    num_complete_minibatches = int(m / mini_batch_size) # math.floor(m / mini)  number of mini batches of size mini_batch_size in your partitionning
-    for k in range(0, num_complete_minibatches):
+    if mini_batch_size != 0:    # In the case if we want mini_batches gradient descent
+        # Partition (shuffled_X, shuffled_Y). Minus the end case.
+        num_complete_minibatches = int(m / mini_batch_size) # math.floor(m / mini)  number of mini batches of size mini_batch_size in your partitionning
+        for k in range(0, num_complete_minibatches):
 
-        mini_batch_X = shuffled_X[:, k * mini_batch_size : (k + 1) * mini_batch_size ]
-        mini_batch_Y = shuffled_Y[:, k * mini_batch_size : (k + 1) * mini_batch_size ]
+            mini_batch_X = shuffled_X[:, k * mini_batch_size : (k + 1) * mini_batch_size ]
+            mini_batch_Y = shuffled_Y[:, k * mini_batch_size : (k + 1) * mini_batch_size ]
 
-        mini_batch = (mini_batch_X, mini_batch_Y)
-        mini_batches.append(mini_batch)
+            mini_batch = (mini_batch_X, mini_batch_Y)
+            mini_batches.append(mini_batch)
 
-    # Handling the end case (last mini-batch < mini_batch_size) Dodajemo mini batch koji moze da bude i manji od pune vrednosti
-    if m % mini_batch_size != 0:
+        # Handling the end case (last mini-batch < mini_batch_size) Dodajemo mini batch koji moze da bude i manji od pune vrednosti
+        if m % mini_batch_size != 0:
 
-        mini_batch_X = shuffled_X[:, - ( m - mini_batch_size * int(m/mini_batch_size)) :]
-        mini_batch_Y = shuffled_Y[:, - ( m - mini_batch_size * int(m/mini_batch_size)) :]
+            mini_batch_X = shuffled_X[:, - ( m - mini_batch_size * int(m/mini_batch_size)) :]
+            mini_batch_Y = shuffled_Y[:, - ( m - mini_batch_size * int(m/mini_batch_size)) :]
 
-        mini_batch = (mini_batch_X, mini_batch_Y)
+            mini_batch = (mini_batch_X, mini_batch_Y)
+            mini_batches.append(mini_batch)
+    else:   # In the case we want gradient descent
+        mini_batch = (shuffled_X, shuffled_Y)
         mini_batches.append(mini_batch)
 
     return mini_batches

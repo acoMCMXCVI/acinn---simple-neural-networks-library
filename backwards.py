@@ -64,7 +64,7 @@ def model_backward(AL, Y, caches, layers, loss):
         dAL = binary_crossentropy_derivative(Y, AL)
 
 
-    #ovo mora odvojeno od for petlje zbog prvog prosledjivanja dA (dAL)
+    # Ovo mora odvojeno od for petlje zbog prvog prosledjivanja dA (dAL)
     current_cache = caches[L-1]
     grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_activation_backward(dAL, current_cache, activation = layers[L-1].activation)
 
@@ -77,6 +77,6 @@ def model_backward(AL, Y, caches, layers, loss):
         grads["dA" + str(l)] = dA_prev_temp
         grads["dW" + str(l + 1)] = dW_temp
         grads["db" + str(l + 1)] = db_temp
-        
+
 
     return grads
