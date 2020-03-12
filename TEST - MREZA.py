@@ -25,7 +25,7 @@ test_x_flatten = test_x_orig.reshape(test_x_orig.shape[0], -1).T
 
 train_x_flatten = train_x_orig.reshape(train_x_orig.shape[0], -1).T
 test_x_flatten = test_x_orig.reshape(test_x_orig.shape[0], -1).T
-print(test_y.shape)
+print(train_x_flatten.shape)
 
 train_x = train_x_flatten/255.
 test_x = test_x_flatten/255.
@@ -34,14 +34,15 @@ test_x = test_x_flatten/255.
 
 model = Acinn()
 
-model.add(Dense(7, 'relu', train_x.shape[0]))
+model.add(Dense(10, 'relu', train_x.shape[0]))
+model.add(Dense(10))
 model.add(Dense(1, 'sigmoid'))
 
 #model.lay()
 
-model.compile(initializer = 'xavier', loss = 'binary_crossentropy', optimizer = Optimizer(learning_rate=0.075) )
+model.compile(initializer = 'xavier', loss = 'binary_crossentropy', optimizer = Optimizer(learning_rate=0.075))
 
-history = model.fit(train_x, train_y, batch_size = 0,epochs = 1000, validation_split = 0.)
+history = model.fit(train_x, train_y, batch_size = 64, epochs = 100000, validation_split = 0.2)
 
 plt.plot(np.squeeze(history))
 plt.ylabel('cost')

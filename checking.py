@@ -25,19 +25,19 @@ def gradient_check(parameters, gradients, layers, X, Y, loss, epsilon = 1e-7):
         thetaplus = np.copy(parameters_values)                                      # Step 1
         thetaplus[i] = thetaplus[i] + epsilon                                # Step 2
         AL, _ = model_forward(X, vector_to_dictionary(thetaplus, parameters_shapes), layers)
-        J_plus[i][0] = model_loss(AL, Y, loss)
+        J_plus[i][0] = model_loss(AL, Y, loss) / X.shape[-1]
 
 
         # Compute J_minus[i]. Inputs: "parameters_values, epsilon". Output = "J_minus[i]".
         thetaminus = np.copy(parameters_values)                                     # Step 1
         thetaminus[i] = thetaminus[i] - epsilon
         AL, _ = model_forward(X, vector_to_dictionary(thetaminus, parameters_shapes), layers)  # Step 2
-        J_minus[i][0] = model_loss(AL, Y, loss)
+        J_minus[i][0] = model_loss(AL, Y, loss) / X.shape[-1]
 
         # Compute gradapprox[i]
         gradapprox[i] = (J_plus[i][0] - J_minus[i][0]) / (2*epsilon)
 
-    print(grad)
+    #print(grad)
     #print(gradients)
     #print(gradapprox)
 

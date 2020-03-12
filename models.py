@@ -56,8 +56,8 @@ class Acinn:
 
                 gradients = model_backward(AL, minibatch_Y, cashe, self.layers, self.loss)
 
-                if i == 0 or i == 10 or i == 100 or i == 1000:
-                    gradient_check(self.parameters, gradients, self.layers, minibatch_X, minibatch_Y, self.loss)
+                #if i == 0 or i == 10 or i == 25000 or i == 1000 or i == 10000:
+                    #gradient_check(self.parameters, gradients, self.layers, minibatch_X, minibatch_Y, self.loss)
 
                 self.parameters = self.optimizer.optimize(self.parameters, gradients)
 
@@ -69,7 +69,7 @@ class Acinn:
                 dev_cost = model_loss(AL_dev, Y_dev, self.loss) / X_dev.shape[-1]   # ovde dev loss delimo sa brojem examplova u dev setu
 
 
-            if info and i % 100 == 0:
+            if info and i % 1000 == 0:
                 print ("Train cost after iteration %i: %f" %(i, epoch_cost_avg))
                 print ("Dev cost after iteration %i: %f" %(i, dev_cost))
 
