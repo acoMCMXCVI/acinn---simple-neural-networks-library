@@ -3,7 +3,9 @@ from initializers import initialize
 from forwards import model_forward
 from backwards import model_backward
 from losses import model_loss
-from optimizers import Optimizer, make_dev_train_sets, make_m_batches
+from optimizers import Optimizer
+from datasplit import make_dev_train_sets, make_m_batches
+
 from checking import gradient_check
 
 class Acinn:
