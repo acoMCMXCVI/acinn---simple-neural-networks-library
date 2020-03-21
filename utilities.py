@@ -1,5 +1,7 @@
 import numpy as np
 import h5py
+import scipy.io
+import matplotlib.pyplot as plt
 
 def load_data():
     train_dataset = h5py.File('data/train_catvnoncat.h5', "r")
@@ -16,3 +18,13 @@ def load_data():
     test_set_y_orig = test_set_y_orig.reshape((1, test_set_y_orig.shape[0]))
 
     return train_set_x_orig, train_set_y_orig, test_set_x_orig, test_set_y_orig, classes
+
+
+def load_2D_dataset():
+    data = scipy.io.loadmat('data/data.mat')
+    train_X = data['X'].T
+    train_Y = data['y'].T
+    test_X = data['Xval'].T
+    test_Y = data['yval'].T
+
+    return train_X, train_Y, test_X, test_Y

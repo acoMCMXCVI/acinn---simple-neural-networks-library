@@ -3,49 +3,54 @@ import numpy as np
 class Optimizer():
 
     optimizer = None
-    learning_rate = None
+    learning_rate_init = None
     beta = None                     # Beta for momentum
     beta1 = None
     beta2 = None
+    decay = None
 
     t = 1                           # adam counter
 
     v = {}                          # Velocity for momentum, Adam
     s = {}                          # Second moment for RMSprop, Adam
 
-    def __init__(self, optimizer = 'SGD', learning_rate = 0.001, beta = 0.9, beta1 = 0.9, beta2 = 0.99):
+    def __init__(self, optimizer = 'SGD', learning_rate = 0.001, beta = 0.9, beta1 = 0.9, beta2 = 0.99, decay = 0):
 
         self.optimizer = optimizer
-        self.learning_rate = learning_rate
+        self.learning_rate_init = learning_rate
         self.beta = beta
         self.beta1 = beta1
         self.beta2 = beta2
+        self.decay = decay
         self.t = 1
 
 
-    def optimize(self, parameters, grads):
+    def optimize(self, parameters, grads, epoch):
+
+        learning_rate = 1 / (1 + self.decay * epoch) * self.learning_rate_init          #standard learning decay ( da li jako remeti performanse? )
 
         if self.optimizer == 'SGD':
 
-            parameters = stochastic_gradient_descent(parameters, grads, self.learning_rate)
+            parameters = stochastic_gradient_descent(parameters, grads, learning_rate)
 
         elif self.optimizer == 'momentum':
 
             if not self.v: self.v = initialize_velocity(parameters)
-            parameters = momentum(parameters, grads, self.v, self.learning_rate, self.beta)
+            parameters = momentum(parameters, grads, self.v, learning_rate, self.beta)
 
         elif self.optimizer == 'RMSprop':
 
             if not self.s: self.s = initialize_velocity(parameters)
-            parameters = rms_prop(parameters, grads, self.s, self.learning_rate, self.beta)
+            parameters = rms_prop(parameters, grads, self.s, learning_rate, self.beta)
 
         elif self.optimizer == 'Adam':
 
             if not self.s or not self.v:
                 self.s = initialize_velocity(parameters)
                 self.v = initialize_velocity(parameters)
-            parameters = adam(parameters, grads, self.v, self.s, self.learning_rate, self.beta1, self.beta2, t = self.t, epsilon = 1e-8)
-            self.t += 1
+            parameters = adam(parameters, grads, self.v, self.s, learning_rate, self.beta1, self.beta2, t = self.t, epsilon = 1e-8)
+
+        self.t += 1
 
         return parameters
 

@@ -61,7 +61,7 @@ class Acinn:
                 #if i == 0 or i == 10 or i == 25000 or i == 1000 or i == 10000:
                     #gradient_check(self.parameters, gradients, self.layers, minibatch_X, minibatch_Y, self.loss)
 
-                self.parameters = self.optimizer.optimize(self.parameters, gradients)
+                self.parameters = self.optimizer.optimize(self.parameters, gradients, i)
 
             epoch_cost_avg = epoch_cost_total / X_train.shape[-1]       # Ovde ukupan train loss delimo sa brojem examplova u train setu
 
