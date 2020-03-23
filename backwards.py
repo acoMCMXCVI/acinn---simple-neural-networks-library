@@ -1,6 +1,6 @@
 import numpy as np
 from activations import sigmoid_derivative, relu_derivative
-from losses import binary_crossentropy_derivative
+from losses import binary_crossentropy_derivative, categorical_crossentropy_softmax_derivative
 
 def relu_backward(dA, activation_cache):
 
@@ -56,17 +56,26 @@ def model_backward(AL, Y, caches, layers, loss):
     grads = {}
     L = len(caches) # the number of layers
     m = AL.shape[1]
-    Y = Y.reshape(AL.shape) # after this line, Y is the same shape as AL
 
-    if loss == 'binary_crossentropy':
-        dAL = binary_crossentropy_derivative(Y, AL)
-    elif loss == 'mean_squared_error':
-        dAL = binary_crossentropy_derivative(Y, AL)
+    Y = Y.reshape(AL.shape) # after this line, Y is the same shape as AL
 
 
     # Ovo mora odvojeno od for petlje zbog prvog prosledjivanja dA (dAL)
     current_cache = caches[L-1]
-    grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_activation_backward(dAL, current_cache, activation = layers[L-1].activation)
+
+    if loss == 'binary_crossentropy':
+        dAL = binary_crossentropy_derivative(Y, AL)
+        grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_activation_backward(dAL, current_cache, activation = layers[L-1].activation)
+
+    elif loss == 'mean_squared_error':
+        dAL = binary_crossentropy_derivative(Y, AL)
+        grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_activation_backward(dAL, current_cache, activation = layers[L-1].activation)
+
+    elif loss == 'categorical_crossentropy':
+        linear_cache, activation_cache = current_cache
+        dZ = categorical_crossentropy_softmax_derivative(Y, AL)
+        grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_backward(dZ, linear_cache)
+
 
     # Loop from l=L-2 to l=0
     for l in reversed(range(L-1)):

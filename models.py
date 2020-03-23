@@ -71,7 +71,7 @@ class Acinn:
                 dev_cost = model_loss(AL_dev, Y_dev, self.loss) / X_dev.shape[-1]   # ovde dev loss delimo sa brojem examplova u dev setu
 
 
-            if info and i % 1000 == 0:
+            if info and i % 10 == 0:
                 print ("Train cost after iteration %i: %f" %(i, epoch_cost_avg))
                 print ("Dev cost after iteration %i: %f" %(i, dev_cost))
 

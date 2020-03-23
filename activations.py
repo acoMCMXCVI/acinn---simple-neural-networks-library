@@ -13,6 +13,16 @@ def relu(Z):
     A = np.maximum( 0, Z)
     return A, Z
 
+
+def softmax(Z):
+    #function calculate softmax of Z
+
+    t = np.exp(Z)
+    A = t / np.sum(t, axis = 0)
+
+    return A, Z
+
+
 def relu_derivative(Z):
 
     gd = np.where(Z<=0, 0, 1)

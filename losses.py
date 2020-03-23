@@ -14,6 +14,16 @@ def binary_crossentropy(AL, Y):
 
     return loss
 
+def categorical_crossentropy(AL, Y):
+
+    # Compute loss from aL and y.
+    loss = -1. *  np.sum ( Y * np.log(AL) )     # We dont use divide wiht m here, becouse minibatchs
+
+    loss = np.squeeze(loss)      # To make sure your cost's shape is what we expect (e.g. this turns [[17]] into 17).
+    assert(loss.shape == ())
+
+    return loss
+
 def mean_squared_error(AL, Y):
 
     m = Y.shape[1]
@@ -33,24 +43,10 @@ def model_loss(AL, Y, loss = 'mean_squared_error'):
         c = mean_squared_error(AL, Y)
     elif loss == 'binary_crossentropy':
         c = binary_crossentropy(AL, Y)
+    elif loss == 'categorical_crossentropy':
+        c = categorical_crossentropy(AL, Y)
 
     return c
-
-def regularization_cost(AL, parameters, layers):
-
-    L = len(parameters) // 2          # number of layers in the neural network
-    Y.shape[-1]
-
-    L2_regularization_cost = 0
-
-    for l in range(0, L):
-        if layers[l].regularization != None:
-            # tu treba dodati granjanje na L2 i L1
-            L2_regularization_cost += np.sum(np.square(parameters['W' + str(l+1)])*layers[l].regularization.lambd/(2*m)
-
-
-    return L2_regularization_cost
-
 
 
 def binary_crossentropy_derivative(Y, AL):
@@ -59,8 +55,15 @@ def binary_crossentropy_derivative(Y, AL):
 
     return dAL
 
+def categorical_crossentropy_softmax_derivative(Y, AL):
 
-def binary_crossentropy_original(AL, Y):
+    dZ = AL - Y
+
+    return dZ
+
+
+'''         OVO JE U IZRADI ili izbaceno
+def binary_crossentropy_original(AL, Y):            #OVO JE ORIGINAL SA DELJENJEM m, ALI JE TO IZBACENO ZBOG MINI BATCHA
 
     m = Y.shape[1]
 
@@ -72,3 +75,20 @@ def binary_crossentropy_original(AL, Y):
     assert(loss.shape == ())
 
     return loss
+
+
+
+def regularization_cost(AL, parameters, layers):
+
+    L = len(parameters) // 2          # number of layers in the neural network
+    Y.shape[-1]
+
+    L2_regularization_cost = 0
+
+    for l in range(0, L):
+        if layers[l].regularization != None:
+            # tu treba dodati granjanje na L2 i L1
+            L2_regularization_cost += np.sum(np.square(parameters['W' + str(l+1)]))*layers[l].regularization.lambd/(2*m)
+
+    return L2_regularization_cost
+'''
