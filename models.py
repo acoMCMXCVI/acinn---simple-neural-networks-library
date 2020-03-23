@@ -36,6 +36,7 @@ class Acinn:
         assert(X.shape[0] == self.layers[0].input_shape), 'Input shape of X is not equale to input shape of model'  # Check for input shape is same with model input
 
         costs = []
+        accuracies = []
 
         train_set, dev_set = make_dev_train_sets(X, Y, validation_split)
         (X_train, Y_train) = train_set
@@ -65,33 +66,65 @@ class Acinn:
 
             epoch_cost_avg = epoch_cost_total / X_train.shape[-1]       # Ovde ukupan train loss delimo sa brojem examplova u train setu
 
-            # calculating the loss of dev set
+            # calculating the loss and acc of dev set
             if validation_split != 0.:
-                AL_dev, _ = model_forward(X_dev, self.parameters, self.layers)
-                dev_cost = model_loss(AL_dev, Y_dev, self.loss) / X_dev.shape[-1]   # ovde dev loss delimo sa brojem examplova u dev setu
+                val_cost, val_acc = self.evaluate(X_dev, Y_dev)
 
 
-            if info and i % 10 == 0:
+            if info and i % 1000 == 0:
                 print ("Train cost after iteration %i: %f" %(i, epoch_cost_avg))
-                print ("Dev cost after iteration %i: %f" %(i, dev_cost))
+                print ("Dev cost after iteration %i: %f" %(i, val_cost))
+                print ("Dev acc after iteration %i: %f" %(i, val_acc))
 
             if i % 10 == 0:
-                costs.append((epoch_cost_avg, dev_cost))
+                costs.append((epoch_cost_avg, val_cost))
+                accuracies.append(val_acc)
 
-        return costs
+        return costs, accuracies
 
 
 
-    def predict(self, x):
+    def evaluate(self, X, Y):
+        # funcija racuna cost i acc modela za neki skup
 
-        AL, cache = model_forward(x, self.parameters, self.layers)
-        predictions = AL > 0.5
+        AL, cashe = model_forward(X, self.parameters, self.layers)
+
+        evoluation_cost = model_loss(AL, Y, self.loss) / X.shape[-1]
+
+        prediction = self.predict(AL, True)
+        evoluation_accuracy = self.accuracy(Y, prediction)
+
+        return evoluation_cost, evoluation_accuracy
+
+
+    def predict(self, x, in_model = False):
+        # funcija racuna predikciju
+        if in_model == False:
+            AL, _ = model_forward(x, self.parameters, self.layers)
+        else:
+            AL = x
+
+        if self.layers[-1].activation == 'sigmoid':
+            predictions = AL > 0.5
+        elif self.layers[-1].activation == 'relu':
+            predictions = AL
+        elif self.layers[-1].activation == 'softmax':
+            predictions = AL == np.max(AL, axis = 0)
 
         return predictions
 
 
 
+    def accuracy(self, Y, predictions):
+        # funcija racuna accuracy
+        acc = (Y == predictions).all(axis=0)
+        acc = float(np.sum(acc) / Y.size) * 100
+
+        return acc
+
+
     def lay(self):
+        # funkcija za proveru da li su dobro definisani layeri
         L = len(self.layers)
 
         for l in range(0,L):

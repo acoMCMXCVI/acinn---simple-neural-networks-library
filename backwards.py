@@ -71,10 +71,10 @@ def model_backward(AL, Y, caches, layers, loss):
         dAL = binary_crossentropy_derivative(Y, AL)
         grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_activation_backward(dAL, current_cache, activation = layers[L-1].activation)
 
-    elif loss == 'categorical_crossentropy':
+    elif loss == 'categorical_crossentropy':                                #ovde je malo drugacije resenje backwarda zato sto nije lako proracunati dAL, pa zatim dZL, nego odmah moramo dZL
         linear_cache, activation_cache = current_cache
-        dZ = categorical_crossentropy_softmax_derivative(Y, AL)
-        grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_backward(dZ, linear_cache)
+        dZL = categorical_crossentropy_softmax_derivative(Y, AL)
+        grads["dA" + str(L-1)], grads["dW" + str(L)], grads["db" + str(L)] = linear_backward(dZL, linear_cache)
 
 
     # Loop from l=L-2 to l=0
