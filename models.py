@@ -45,7 +45,8 @@ class Acinn:
         for i in range(0, epochs):
 
             epoch_cost_total = 0
-            dev_cost = 0
+            val_cost = 0
+            val_acc = 0
 
             minibatches = make_m_batches(X_train, Y_train, batch_size)
 
@@ -71,7 +72,7 @@ class Acinn:
                 val_cost, val_acc = self.evaluate(X_dev, Y_dev)
 
 
-            if info and i % 1000 == 0:
+            if info and i % 10 == 0:
                 print ("Train cost after iteration %i: %f" %(i, epoch_cost_avg))
                 print ("Dev cost after iteration %i: %f" %(i, val_cost))
                 print ("Dev acc after iteration %i: %f" %(i, val_acc))
@@ -85,7 +86,7 @@ class Acinn:
 
 
     def evaluate(self, X, Y):
-        # funcija racuna cost i acc modela za neki skup
+        # funcija racuna cost i acc modela za X i Y
 
         AL, cashe = model_forward(X, self.parameters, self.layers)
 
@@ -118,7 +119,7 @@ class Acinn:
     def accuracy(self, Y, predictions):
         # funcija racuna accuracy
         acc = (Y == predictions).all(axis=0)
-        acc = float(np.sum(acc) / Y.size) * 100
+        acc = float(np.sum(acc) / Y.shape[-1]) * 100
 
         return acc
 
