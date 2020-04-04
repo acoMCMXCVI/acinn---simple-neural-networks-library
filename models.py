@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 from initializers import initialize
 from forwards import model_forward
 from backwards import model_backward
@@ -122,6 +123,16 @@ class Acinn:
         acc = float(np.sum(acc) / Y.shape[-1]) * 100
 
         return acc
+
+    def save_weights(self, path):
+        #funckija cuva parametre na disk
+        with open(path + '.pkl', 'wb') as f:
+            pickle.dump(self.parameters, f, pickle.HIGHEST_PROTOCOL)
+
+    def load_weights(self, path):
+        #funckija cuva parametre na disk
+        with open(path + '.pkl', 'rb') as f:
+            self.parameters = pickle.load(f)
 
 
     def lay(self):
