@@ -2,7 +2,7 @@ import numpy as np
 from activations import sigmoid, relu, softmax
 
 def linear_forward(A_prev, W, b):
-    # function calculate Z of units in single layer
+    # function calculate Z
 
     Z = np.dot(W, A_prev) + b
 
@@ -13,20 +13,17 @@ def linear_forward(A_prev, W, b):
 
 
 def linear_activation_forward(A_prev, W, b, activation):
-    # function calculate A  od units in single layer
+    # function calculate A od units in single layer
 
     if activation == "sigmoid":
-        # Inputs: "A_prev, W, b". Outputs: "A, activation_cache".
         Z, linear_cache = linear_forward(A_prev, W, b)
         A, activation_cache = sigmoid(Z)
 
     elif activation == "relu":
-        # Inputs: "A_prev, W, b". Outputs: "A, activation_cache".
         Z, linear_cache = linear_forward(A_prev, W, b)
         A, activation_cache = relu(Z)
 
     elif activation == "softmax":
-        # Inputs: "A_prev, W, b". Outputs: "A, activation_cache".
         Z, linear_cache = linear_forward(A_prev, W, b)
         A, activation_cache = softmax(Z)
 
@@ -42,7 +39,7 @@ def model_forward(X, parameters, layers):
 
     caches = []
     A = X
-    L = len(parameters) // 2          # number of layers in the neural network
+    L = len(parameters) // 2          # # layers
 
 
     for l in range(1, L+1):

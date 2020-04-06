@@ -49,3 +49,12 @@ def load_hand_softmax():
     test_set_y_orig = test_set_y_orig.reshape((1, test_set_y_orig.shape[0]))
 
     return train_set_x_orig, train_set_y_orig, test_set_x_orig, test_set_y_orig, classes
+
+
+def lay(self):
+    # funkcija za proveru da li su dobro definisani layeri
+    L = len(self.layers)
+
+    for l in range(0,L):
+        print(self.layers[l].input_shape)
+        print(self.layers[l].units)

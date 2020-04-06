@@ -24,14 +24,16 @@ def softmax(Z):
 
 
 def relu_derivative(Z):
+    #function calculate derivative of relu
 
-    gd = np.where(Z<=0, 0, 1)
+    dg = np.where(Z<=0, 0, 1)
 
-    return gd
+    return dg
 
 def sigmoid_derivative(Z):
+    #function calculate derivative of sigmoid
 
     sigmZ, _ = sigmoid(Z)
-    gd = sigmZ * (1 - sigmZ)
+    dg = sigmZ * (1 - sigmZ)
 
-    return gd
+    return dg

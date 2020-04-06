@@ -16,7 +16,7 @@ class Acinn:
     loss = ()                       # loss that we use
     optimizer = None                # optimizer of model
 
-    # Function for add new layers to network
+    # function for add new layers to network
     def add(self, layer):
         if self.layers:
             layer.input_shape = self.layers[-1].units
@@ -25,16 +25,16 @@ class Acinn:
 
         assert(self.layers[0].input_shape != None), 'Input shape is not defined'
 
-    # Function for compile mode, initialize parms, loss, optimizer,...
+    # function for compile mode, initialize parms, loss, optimizer,...
     def compile(self, initializer = 'random', loss = 'mean_squared_error', optimizer = Optimizer()):
 
         self.parameters = initialize(self.layers, initializer)
         self.loss = loss
         self.optimizer = optimizer
 
-    # Function for fitting model
+    # function for fitting model
     def fit(self, X, Y, batch_size = 32, epochs = 1, validation_split = 0., info=True):
-        assert(X.shape[0] == self.layers[0].input_shape), 'Input shape of X is not equale to input shape of model'  # Check for input shape is same with model input
+        assert(X.shape[0] == self.layers[0].input_shape), 'Input shape of X is not equale to input shape of model'  # check for input shape is same with model input
 
         costs = []
         accuracies = []
@@ -66,7 +66,7 @@ class Acinn:
 
                 self.parameters = self.optimizer.optimize(self.parameters, gradients, i)
 
-            epoch_cost_avg = epoch_cost_total / X_train.shape[-1]       # Ovde ukupan train loss delimo sa brojem examplova u train setu
+            epoch_cost_avg = epoch_cost_total / X_train.shape[-1]       # entire train loss divaded with number of examples in train set
 
             # calculating the loss and acc of dev set
             if validation_split != 0.:
@@ -74,9 +74,10 @@ class Acinn:
 
 
             if info and i % 10 == 0:
-                print ("Train cost after iteration %i: %f" %(i, epoch_cost_avg))
-                print ("Dev cost after iteration %i: %f" %(i, val_cost))
-                print ("Dev acc after iteration %i: %f" %(i, val_acc))
+                print('Epoch %i / %i \t train loss - %f \t dev loss - %f \t dec acc - %f' %(i, epochs, epoch_cost_avg, val_cost, val_acc))
+                #print ("Train cost after iteration %i: %f" %(i, epoch_cost_avg))
+                #print ("Dev cost after iteration %i: %f" %(i, val_cost))
+                #print ("Dev acc after iteration %i: %f" %(i, val_acc))
 
             if i % 10 == 0:
                 costs.append((epoch_cost_avg, val_cost))
@@ -87,7 +88,7 @@ class Acinn:
 
 
     def evaluate(self, X, Y):
-        # funcija racuna cost i acc modela za X i Y
+        # function evaluete model calculating cost and acc for X and Y
 
         AL, cashe = model_forward(X, self.parameters, self.layers)
 
@@ -100,7 +101,8 @@ class Acinn:
 
 
     def predict(self, x, in_model = False):
-        # funcija racuna predikciju
+        # function calculate prediction for given X
+
         if in_model == False:
             AL, _ = model_forward(x, self.parameters, self.layers)
         else:
@@ -118,27 +120,21 @@ class Acinn:
 
 
     def accuracy(self, Y, predictions):
-        # funcija racuna accuracy
+        # function calculate acc for Y and predicted values from X
+
         acc = (Y == predictions).all(axis=0)
         acc = float(np.sum(acc) / Y.shape[-1]) * 100
 
         return acc
 
     def save_weights(self, path):
-        #funckija cuva parametre na disk
+        # function save model to disc
+
         with open(path + '.pkl', 'wb') as f:
             pickle.dump(self.parameters, f, pickle.HIGHEST_PROTOCOL)
 
     def load_weights(self, path):
-        #funckija cuva parametre na disk
+        # function load model from disc
+
         with open(path + '.pkl', 'rb') as f:
             self.parameters = pickle.load(f)
-
-
-    def lay(self):
-        # funkcija za proveru da li su dobro definisani layeri
-        L = len(self.layers)
-
-        for l in range(0,L):
-            print(self.layers[l].input_shape)
-            print(self.layers[l].units)

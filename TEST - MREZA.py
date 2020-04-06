@@ -41,9 +41,9 @@ test_x = test_x_flatten/255.
 
 
 # njihov 2d data set
-train_x, train_y, test_x, test_y = load_2D_dataset()
+#train_x, train_y, test_x, test_y = load_2D_dataset()
 
-
+'''
 # logistic regresion MODEL
 
 model = Acinn()
@@ -80,32 +80,41 @@ plt.legend(('dev'))
 
 plt.show()
 
-      
+
 '''
 # softmax regresion MODEL
 
 model = Acinn()
 
 model.add(Dense(25, 'relu', train_x.shape[0]))
-model.add(Dense(12))    
+model.add(Dense(12))
 model.add(Dense(6, 'softmax'))
 
-model.compile(initializer = 'he', loss = 'categorical_crossentropy', optimizer = Optimizer(optimizer = 'Adam', learning_rate=lr2, decay = 0))
+model.compile(initializer = 'xavier', loss = 'categorical_crossentropy', optimizer = Optimizer(optimizer = 'Adam', learning_rate=lr2, decay = 0))
 history = model.fit(train_x, train_y, batch_size = 32, epochs = 1500, validation_split = 0)
+model.save_weights('model')
 
+cost_acc_train = model.evaluate(train_x, train_y)
+cost_acc_test = model.evaluate(test_x, test_y)
+print('model cost and acc is for train:' + str(cost_acc_train))
+print('model cost and acc is for test:' + str(cost_acc_test))
 
-plt.plot(np.squeeze(history))
+prediction = model.predict(test_x)
+print('model accuracy is for test:' + str(model.accuracy(test_y, prediction)))
+
+cost, acc = history
+
+plt.subplot(2, 1, 1)
+plt.plot(np.squeeze(cost))
 plt.ylabel('cost')
-plt.xlabel('iterations (per hundreds)')
+plt.xlabel('iterations')
 plt.title("Learning rate =" + str(lr))
 plt.legend(('train', 'dev'))
+
+plt.subplot(2, 1, 2)
+plt.plot(np.squeeze(acc))
+plt.ylabel('acc')
+plt.xlabel('iterations')
+plt.legend(('dev'))
+
 plt.show()
-
-predictions = model.predict(train_x)
-
-print ('Accuracy: %d' % float((np.dot(train_y,predictions.T) + np.dot(1-train_y,1-predictions.T))/float(train_y.size)*100) + '%')
-
-predictions = model.predict(test_x)
-
-print ('Accuracy: %d' % float((np.dot(test_y,predictions.T) + np.dot(1-test_y,1-predictions.T))/float(test_y.size)*100) + '%')
-'''

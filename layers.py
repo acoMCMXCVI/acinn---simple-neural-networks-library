@@ -1,3 +1,5 @@
+# layers witch we can use in networks arh.
+
 class Dense():
 
     units = 0

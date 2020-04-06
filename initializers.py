@@ -1,6 +1,6 @@
 import numpy as np
 
-def zero_initialize(layers):
+def zero_initialize(layers):             #zero initialization
     parameters = {}
     L = len(layers)
 
@@ -45,6 +45,8 @@ def xavier_initialize(layers):             #xavier initialization
 
 
 def initialize(layers, initializer):
+    # function initialize parameters of model
+
     parameters = {}
 
     if initializer == 'random' or initializer == 'relu' or initializer == 'he':
