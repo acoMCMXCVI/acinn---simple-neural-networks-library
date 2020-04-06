@@ -246,5 +246,10 @@ Neki od elemenata koji će biti implementirani su:
  * Vizuelizacija modela
  * Čuvanje na disk celokupnog modela
 
+## Zašto ime AcInn?
+
+Ne znam ni ja, iskreno. Zapravo, prilikom osmišljavanja naziva biblioteke, pre nego što je započet proces izrade, ova reč je imala smisla. Imala je značenje. Par nedelja kasnije, značenje je nestalo (zaboravilo se). Neke pretpostavke su da je to možda trebalo da znači __Acos' Custom Implementation of Neural Network__, ali ne zvuči toliko _WoW_ koliko je zvučalo pre, u mojoj glavi. 
+
+Ali za sada bude to, dok se pravo značenje ne vrati :) 
 
 
