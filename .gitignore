@@ -3,3 +3,6 @@ data/
 train/
 __pycache__/
 *.pkl
+TEST - tutorial.py
+TEST - load_weights.py
+
